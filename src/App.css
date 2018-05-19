@@ -2,12 +2,6 @@
 	color: pink;
 }
 
-.resultTable {
-	overflow: scroll;
-	height: 500px;
-	cursor: pointer;
-}
-
 .answer {
   margin: 20px 20px 20px 20px;
 }

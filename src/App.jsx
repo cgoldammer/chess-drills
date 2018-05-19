@@ -4,44 +4,14 @@ import { ButtonGroup, Panel, ListGroup, ListGroupItem, Navbar, Nav, NavItem, Nav
 import { Link, Route } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Media from "react-media";
-import BootstrapTable from 'react-bootstrap-table-next';
 
+// The main data
 import drills from '../data/data_private.json';
+
 import { AppNavbar } from './AppNavbar.jsx';
 import { Board } from './Board.jsx';
-
+import { ResultTable } from './ResultTable.jsx';
 import { startResults, emptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
-
-const TR = () => <div>Row</div>;
-
-export class ResultTable extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = { }
-  }
-  onRowSelect = (e, row) => {
-    this.props.rowSelector(row);
-  }
-
-  render = () => {
-    const rowEvents = { onClick: this.onRowSelect };
-    const columns = [ {dataField: 'id', text: 'Id'}
-    , {dataField: 'reference', text: 'Name'}
-    , {dataField: 'type', text: 'Material'}
-    , {dataField: 'right', text: 'Number right', sort: true}
-    , {dataField: 'wrong', text: 'Number wrong', sort: true}
-    ];
-    const sort = [{dataField: "wrong", order:"desc"}];
-  
-    return (
-      <div>
-        <div className={styles.resultTable}>
-          <BootstrapTable defaultSorted={sort} keyField="id" data={this.props.data} columns={columns} rowEvents={rowEvents}/>
-        </div>
-      </div>
-    )
-  }
-}
 
 export class AnswerWindow extends React.Component {
   constructor(props) {
@@ -49,13 +19,16 @@ export class AnswerWindow extends React.Component {
   }
   render = () => {
     const data = this.props.data;
-    const linkBoard = "https://lichess.org/editor?fen=" + data.fen;
-    const linkAnalysis = "https://lichess.org/analysis/" + data.fen;
+    const linkText = type => "https://lichess.org/" + type + "/" + data.fen;
+    const linkTypes = [
+      {text: 'Board editor', url: 'editor?fen='}
+    , {text: 'Analysis board', url: 'analysis'}]
+
+    const button = linkData => (<div key={linkData.url}><a target="_blank" href={linkText(linkData.url)}>{"Lichess " + linkData.text}</a></div>)
 
     return (<div>
       <div>{ data.answer } </div>
-      <div><a target="_blank" href={linkBoard}>Lichess board editor</a></div>
-      <div><a target="_blank" href={linkAnalysis}>Lichess analysis board</a></div>
+      { linkTypes.map(button) }
     </div>);
   }
 }

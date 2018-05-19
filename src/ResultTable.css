@@ -1,0 +1,5 @@
+.resultTable {
+	overflow: scroll;
+	height: 500px;
+	cursor: pointer;
+}
