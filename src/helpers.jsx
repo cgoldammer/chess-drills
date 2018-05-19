@@ -3,7 +3,7 @@ const getData = () => {
   return ls ? JSON.parse(window.localStorage.getItem("results"))  : [];
 }
 
-const emptyDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
+export const emptyDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
 
 export const emptyResults = drills => drills.map(emptyDrill);
 
