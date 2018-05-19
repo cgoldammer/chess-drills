@@ -3,6 +3,7 @@ require.extensions['.css'] = () => {
 };
 
 var path = require('path');
+var debug = process.env.NODE_ENV !== "production";
 const webpack = require('webpack');
 
 module.exports = {
@@ -46,16 +47,13 @@ module.exports = {
   resolve: {
     extensions: ['*', '.js', '.jsx']
   },
-  output: {
-    path: __dirname + '/dist',
-    publicPath: '/',
-    filename: 'bundle.js'
-  },
+	devtool: debug ? "eval-source-map" : false,
+  output: { path: __dirname, filename: debug ? 'lib/bundle.js' : 'lib/bundle.min.js' },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
-    contentBase: './dist',
+    contentBase: './lib',
     hot: true,
 		port: 9000,
 		host: '0.0.0.0',
