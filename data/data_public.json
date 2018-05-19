@@ -1,0 +1,8 @@
+[
+{ "type": "Rv2P"
+, "fen": "8/1K6/5kp1/5p2/8/8/8/R7 b - -"
+, "challenge": "B to move. What is the outcome with the white King on a8, b7, c6? Note: This is about intuition, it's not at all easy to calculate this."
+, "answer": "Ka8 and Kb7 are draw, Kc6 is winning for White"
+, "reference": "Own analysis"
+}
+]

@@ -1,0 +1,5 @@
+node_modules/
+data/data_private.json
+data/template.json
+*.sw*
+dist/bundle.js
