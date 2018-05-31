@@ -12,7 +12,7 @@ export class ResultTable extends React.Component {
   }
   render = () => {
     const rowEvents = { onClick: this.onRowSelect };
-    const columns = [ {dataField: 'id', text: 'Id'}
+    const columns = [ {dataField: 'id', text: 'Id', sort:true}
     , {dataField: 'reference', text: 'Name'}
     , {dataField: 'type', text: 'Material'}
     , {dataField: 'right', text: 'Number right', sort: true}
@@ -23,7 +23,7 @@ export class ResultTable extends React.Component {
     return (
       <div>
         <div className={styles.resultTable}>
-          <BootstrapTable defaultSorted={sort} keyField="id" data={this.props.data} columns={columns} rowEvents={rowEvents}/>
+          <BootstrapTable defaultSorted={sort} keyField="reference" data={this.props.data} columns={columns} rowEvents={rowEvents}/>
         </div>
       </div>
     )

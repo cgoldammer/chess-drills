@@ -6,17 +6,15 @@
   margin: 20px 20px 20px 20px;
 }
 
-.app {
-  margin: 20px 20px 20px 20px;
-}
 
 .title {
-  font-size: 200%;
+  font-size: 160%;
 }
 
 .question {
-  font-size: 150%;
+  font-size: 120%;
   height: 100px;
+  minHeight: 100px;
 }
 
   

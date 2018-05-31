@@ -1,7 +1,23 @@
-const getData = () => {
-  const ls = window.localStorage
-  return ls ? JSON.parse(window.localStorage.getItem("results"))  : [];
+const checkStored = drills => {
+  const count = names => 
+    names.reduce((a, b) => 
+      Object.assign(a, {[b]: (a[b] || 0) + 1}), {})
+  const findDuplicates = dict => 
+    Object.keys(dict).filter((a) => dict[a] > 1)
+
+  const duplicates = findDuplicates(count((drills.map(drill => drill.reference))));
+  if (duplicates.length >= 0){
+  }
+  return drills;
 }
+
+const getResults = () => {
+  const ls = window.localStorage
+  const stored = ls.getItem("results");
+  const parsed = (ls && stored) ? JSON.parse(stored)  : {}
+  return parsed != null ? parsed : {}
+}
+
 
 export const emptyDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
 
@@ -10,8 +26,9 @@ export const emptyResults = drills => drills.map(emptyDrill);
 /* Every time you reload the page, check whether the list of questions has changed.
 If so, merge the new questions (defaulted to zero wrong and right answers
 into the existing results */
-export const startResults = (drills) => {
-  const storedResults = getData();
+export const startResults = (set, drills) => {
+  const storedResults = getResults();
+  const stored = (set in storedResults) ? storedResults[set] : [];
   const empty = emptyResults(drills);
 
   const getDrillByReference = (list, reference) => {
@@ -24,7 +41,7 @@ export const startResults = (drills) => {
   }
 
   const getDrillWithDefault = drill => {
-    const fromResults = getDrillByReference(storedResults, drill.reference);
+    const fromResults = getDrillByReference(stored, drill.reference);
     return fromResults == null ? getDrillByReference(empty, drill.reference) : fromResults
   }
 
@@ -33,7 +50,7 @@ export const startResults = (drills) => {
   return results;
 }
 
-export const randomIndex = (drills) => Math.floor(Math.random() * drills.length)
+export const randomIndex = drills => Math.floor(Math.random() * drills.length)
 
 /* 
 Return a random sample of drills, but exclude drills where the
@@ -52,14 +69,19 @@ export const nextIndex = (index, drills, results) => {
   return candidate;
 }
 
-export const updateResults = (results, index, numRight, numWrong) => {
+export const updatedResults = (results, index, numRight, numWrong) => {
   var data = {}
   const currentResults = results[index];
   data = Object.assign(currentResults, data);
   data.wrong = data.wrong + numWrong;
   data.right = data.right + numRight;
   var allData = results
-  allData[index] = data;
-  window.localStorage.setItem("results", JSON.stringify(allData));
-  return allData;
+  return allData
+}
+
+export const updateResults = (name, results, index, numRight, numWrong) => {
+  var data = getResults()
+  data[name] = updatedResults(results, index, numRight, numWrong);
+  window.localStorage.setItem("results", JSON.stringify(data));
+  return data[name];
 }
