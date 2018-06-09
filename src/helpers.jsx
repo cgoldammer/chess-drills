@@ -5,6 +5,11 @@ import drills_repertoire from '../data/data_repertoire.json';
 export var allWarnings = {};
 window.allWarnings = allWarnings;
 
+export const summResults = (message, results) => {
+  alert(message + results.endgames.map(d => d.right))
+}
+
+
 const checkStored = drills => {
   const count = names => 
     names.reduce((a, b) => 
@@ -29,7 +34,9 @@ const getResults = () => {
   const ls = window.localStorage
   const stored = ls.getItem("results");
   const parsed = (ls && stored) ? JSON.parse(stored)  : {}
-  return parsed != null ? parsed : {}
+  const safeParsed = parsed != null ? parsed : {}
+  return safeParsed
+
 }
 
 /* Storing results in local storage */
@@ -48,7 +55,18 @@ export const allEmptyResults = () => {
   return allEmpty;
 }
 
-export const resetAllResults = () => storeResults(allEmptyResults());
+export const resetSomeResults = name => {
+  var results = getResults()
+  results[name] = emptyResults(allDrills[name]);
+  storeResults(results);
+  return results[name];
+}
+
+export const resetAllResults = () => {
+  const results = allEmptyResults();
+  storeResults(results);
+  return results;
+}
 // We're allowing to reset the results through the console which is useful if something breaks.
 window.reset = resetAllResults;
 
@@ -113,5 +131,6 @@ export const updateResults = (name, results, index, numRight, numWrong) => {
   var data = getResults()
   data[name] = updatedResults(results, index, numRight, numWrong);
   storeResults(data);
+
   return data[name];
 }
