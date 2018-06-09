@@ -16,13 +16,6 @@ describe('Integration tests: ', () => {
     const wrapper = mount(<App />);
     expect(wrapper.text()).toContain(appName);
   });
-  test('If I call next, the index changes', () => {
-    const wrapper = mount(<DrillWindow />);
-    const initialIndex = wrapper.state().index;
-    wrapper.instance().next();
-    const newIndex = wrapper.state().index;
-    expect(newIndex).not.toEqual(initialIndex);
-  });
 });
 
 const getDummyData = () => {

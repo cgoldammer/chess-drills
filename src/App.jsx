@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { AppNavbar } from './AppNavbar.jsx';
 import { Board } from './Board.jsx';
 import { ResultTable } from './ResultTable.jsx';
-import { allDrills, startResults, allEmptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
+import { allWarnings, allDrills, startResults, allEmptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
 
 export class AnswerWindow extends React.Component {
   constructor(props) {
@@ -105,6 +105,19 @@ export class TypeSelector extends React.Component {
   }
 }
 
+const WarningWindow = () => {
+  const keys = Object.keys(allWarnings);
+  var content = null;
+  if (keys.length > 0){
+    const nameDiv = key => (<div key={ key }>{ key }: { JSON.stringify(allWarnings[key])}</div>)
+    content = (<div>
+      <h2>Warnings</h2>
+      { Object.keys(allWarnings).map(nameDiv) }
+    </div>)
+  }
+  return content;
+}
+
 export class App extends React.Component {
 	constructor(props){
 		super(props);
@@ -130,6 +143,7 @@ export class App extends React.Component {
 		return (
       <div>
         <AppNavbar/>
+        <WarningWindow/>
         <Grid fluid>
           <TypeSelector setOptions={ setOptions } onChange={ this.setActiveSet }/>
           { drillWindow }

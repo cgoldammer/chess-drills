@@ -2,10 +2,8 @@
 import drills_endgame from '../data/data_endgames.json';
 import drills_repertoire from '../data/data_repertoire.json';
 
-export const allDrills = {
-  endgames: drills_endgame
-, repertoire: drills_repertoire
-}
+export var allWarnings = {};
+window.allWarnings = allWarnings;
 
 const checkStored = drills => {
   const count = names => 
@@ -15,11 +13,18 @@ const checkStored = drills => {
     Object.keys(dict).filter((a) => dict[a] > 1)
 
   const duplicates = findDuplicates(count((drills.map(drill => drill.reference))));
-  if (duplicates.length >= 0){
+  if (duplicates.length > 0){
+    allWarnings['duplicates'] = duplicates;
   }
   return drills;
 }
 
+export const allDrills = {
+  endgames: checkStored(drills_endgame)
+, repertoire: checkStored(drills_repertoire)
+}
+
+/* Obtaining the results from local storage */
 const getResults = () => {
   const ls = window.localStorage
   const stored = ls.getItem("results");
@@ -27,10 +32,14 @@ const getResults = () => {
   return parsed != null ? parsed : {}
 }
 
+/* Storing results in local storage */
+const storeResults = results => window.localStorage.setItem("results", JSON.stringify(results));
 
-export const emptyDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
-const emptyResults = drills => drills.map(emptyDrill);
+// Turns a drill into an empty results
+export const emptyResultFromDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
+const emptyResults = drills => drills.map(emptyResultFromDrill);
 
+// Obtain the full set of empty results corresponding to `allDrills`.
 export const allEmptyResults = () => {
   var allEmpty = {};
   for (var key of Object.keys(allDrills)){
@@ -39,9 +48,8 @@ export const allEmptyResults = () => {
   return allEmpty;
 }
 
-const storeResults = results => window.localStorage.setItem("results", JSON.stringify(results));
-
 export const resetAllResults = () => storeResults(allEmptyResults());
+// We're allowing to reset the results through the console which is useful if something breaks.
 window.reset = resetAllResults;
 
 
