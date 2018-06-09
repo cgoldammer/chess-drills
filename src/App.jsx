@@ -5,19 +5,10 @@ import { Link, Route } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Select from 'react-select';
 
-// The main data
-import drills_endgame from '../data/data_endgames.json';
-import drills_repertoire from '../data/data_repertoire.json';
-
-const allDrills = {
-  endgames: drills_endgame
-, repertoire: drills_repertoire
-}
-
 import { AppNavbar } from './AppNavbar.jsx';
 import { Board } from './Board.jsx';
 import { ResultTable } from './ResultTable.jsx';
-import { startResults, emptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
+import { allDrills, startResults, allEmptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
 
 export class AnswerWindow extends React.Component {
   constructor(props) {
@@ -54,7 +45,7 @@ export class DrillWindow extends React.Component {
   nextIndex = () => nextIndex(this.props.index, this.props.drills, this.props.results);
   next = () => this.setToIndex(this.nextIndex())
   gameSelect = row => this.setToIndex(row.id);
-  resetResults = () => this.props.setResults(emptyResults(this.props.drills))
+  resetResults = () => this.props.setResults(emptyResults())
   updateAnswer = (numRight, numWrong) => {
     const newResults = updateResults(this.props.activeSet, this.props.results, this.props.index, numRight, numWrong);
     this.setState({hasAnswered: true}, () => this.props.setResults(newResults));

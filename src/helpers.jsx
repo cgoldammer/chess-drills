@@ -1,3 +1,12 @@
+// The main data
+import drills_endgame from '../data/data_endgames.json';
+import drills_repertoire from '../data/data_repertoire.json';
+
+export const allDrills = {
+  endgames: drills_endgame
+, repertoire: drills_repertoire
+}
+
 const checkStored = drills => {
   const count = names => 
     names.reduce((a, b) => 
@@ -20,8 +29,21 @@ const getResults = () => {
 
 
 export const emptyDrill = (drill, index) => ({...drill, id: index, right: 0, wrong: 0})
+const emptyResults = drills => drills.map(emptyDrill);
 
-export const emptyResults = drills => drills.map(emptyDrill);
+export const allEmptyResults = () => {
+  var allEmpty = {};
+  for (var key of Object.keys(allDrills)){
+    allEmpty[key] = emptyResults(allDrills[key]);
+  }
+  return allEmpty;
+}
+
+const storeResults = results => window.localStorage.setItem("results", JSON.stringify(results));
+
+export const resetAllResults = () => storeResults(allEmptyResults());
+window.reset = resetAllResults;
+
 
 /* Every time you reload the page, check whether the list of questions has changed.
 If so, merge the new questions (defaulted to zero wrong and right answers
@@ -82,6 +104,6 @@ export const updatedResults = (results, index, numRight, numWrong) => {
 export const updateResults = (name, results, index, numRight, numWrong) => {
   var data = getResults()
   data[name] = updatedResults(results, index, numRight, numWrong);
-  window.localStorage.setItem("results", JSON.stringify(data));
+  storeResults(data);
   return data[name];
 }
