@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { AppNavbar } from './AppNavbar.jsx';
 import { Board } from './Board.jsx';
 import { ResultTable } from './ResultTable.jsx';
-import { resetSomeResults, allWarnings, allDrills, startResults, allEmptyResults, nextIndex, randomIndex, updateResults } from "./helpers.jsx";
+import { resetSomeResults, allWarnings, allDrills, startResults, allEmptyResults, nextIndex, randomIndex, updateResultsSet } from "./helpers.jsx";
 
 export class AnswerWindow extends React.Component {
   constructor(props) {
@@ -26,7 +26,8 @@ export class AnswerWindow extends React.Component {
     return (<div>
       <div>{ data.answer } </div>
       { linkTypes.map(button) }
-    </div>);
+      </div>
+    );
   }
 }
 
@@ -45,10 +46,10 @@ export class DrillWindow extends React.Component {
   nextIndex = () => nextIndex(this.props.index, this.props.drills, this.props.results);
   next = () => this.setToIndex(this.nextIndex())
   gameSelect = row => this.setToIndex(row.id);
-  resetResults = () => this.props.setResults(resetSomeResults(this.props.activeSet))
+  resetResults = () => this.props.resetSomeResults()
   updateAnswer = (numRight, numWrong) => {
-    const newResults = updateResults(this.props.activeSet, this.props.results, this.props.index, numRight, numWrong);
-    this.setState({hasAnswered: true}, () => this.props.setResults(newResults));
+    const newResults = updateResultsSet(this.props.activeSet, this.props.results, this.props.index, numRight, numWrong);
+    this.setState({hasAnswered: true}, () => this.props.setResultsAtSet(newResults));
   }
   canAddResult = () => this.state.showAnswer && !this.state.hasAnswered
   canNext = () => this.state.showAnswer && this.state.hasAnswered
@@ -62,7 +63,7 @@ export class DrillWindow extends React.Component {
         <Row>
           <Col md={6}>
             <Row>
-              <div class="text-center">
+              <div className="text-center">
                 <div className={styles.title}>{ data.reference }</div>
                 <div className={styles.question}>{ data.challenge }</div>
               </div>
@@ -133,19 +134,23 @@ export class App extends React.Component {
     , results: null};
 	}
   setIndex = num => this.setState({index: num})
-  setResults = results => this.setState({results: results})
+  setResultsAtSet = results => {
+    newResultsSet = resetSomeResults(this.state.results, this.state.activeIndex)
+    this.setState({results: newResultsSet})
+  }
   setActiveSet = set => {
     const newSet = set.value;
     const drills = allDrills[newSet];
     const results = startResults(newSet, drills);
     this.setState({activeSet: newSet, index: randomIndex(drills), results: results});
   }
+  resetSomeResults = () => this.setResultsAtSet(resetSomeResults(this.state.results, this.props.activeSet))
 	render = () => {
     const setOptions = [
       {value: "endgames", label: "Endgames"}
     , {value: "repertoire", label: "Repertoire"}];
     const set = this.state.activeSet;
-    const drillWindow = set ? <DrillWindow index={this.state.index} setIndex={this.setIndex} setResults={this.setResults} results={this.state.results} activeSet={set} drills={ allDrills[set] }/> : <div/>;
+    const drillWindow = set ? <DrillWindow index={this.state.index} setIndex={this.setIndex} setResultsAtSet={this.setResultsAtSet} results={this.state.results} activeSet={set} drills={ allDrills[set] } resetSomeResults={ this.resetSomeResults }/> : <div/>;
 		return (
       <div>
         <AppNavbar/>
